@@ -1,9 +1,10 @@
+import { useMemo, useState } from 'react';
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { Input, Typography, Card, Pagination  } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useMemo, useState } from 'react';
+import { debounce } from '../helpers/util';
 
 type TPost = {
   title: string;
@@ -39,6 +40,10 @@ const Home: NextPage<PropTypes> = ({ posts, error }) => {
     }, []);
   }, [showSize, currentPage, filteredPosts]);
 
+  const handleSearch = debounce((v: string) => {
+    setSearch(v);
+  }, 500);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -55,7 +60,7 @@ const Home: NextPage<PropTypes> = ({ posts, error }) => {
           size="large"
           placeholder='Search Post by title'
           prefix={<SearchOutlined />}
-          onChange={e => setSearch(e.currentTarget.value)}
+          onChange={e => handleSearch(e.currentTarget.value)}
         />
         <div>
           <div className={styles.post_container}>
